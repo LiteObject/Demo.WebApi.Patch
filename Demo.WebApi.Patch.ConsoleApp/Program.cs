@@ -56,11 +56,13 @@ namespace Demo.WebApi.Patch.ConsoleApp
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)                
                 .AddEnvironmentVariables();
 
+            services.AddSingleton<LoggingHandler>();
+
             services.AddRefitClient<IUserService>().ConfigureHttpClient(
                 c =>
                 {
                     c.BaseAddress = new Uri("http://localhost:5000");
-                });
+                }).AddHttpMessageHandler<LoggingHandler>();
         }
     }
 }
