@@ -10,8 +10,6 @@ namespace Demo.WebApi.Patch.ConsoleApp
     {
         private static readonly ServiceProvider Provider;
 
-        private static IConfiguration configuration;
-
         static Program()
         {
             var serviceCollection = new ServiceCollection();
@@ -55,15 +53,10 @@ namespace Demo.WebApi.Patch.ConsoleApp
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
             IConfigurationBuilder configBuilder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                /*.AddJsonFile($"appsettings.{environmentName}.json", true, true) */
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)                
                 .AddEnvironmentVariables();
 
-            services.AddRefitClient<IUserService>(new RefitSettings()
-            {
-                // To use "System.Text.Json"
-                // ContentSerializer = new RefitJsonContentSerializer()
-            }).ConfigureHttpClient(
+            services.AddRefitClient<IUserService>().ConfigureHttpClient(
                 c =>
                 {
                     c.BaseAddress = new Uri("http://localhost:5000");
