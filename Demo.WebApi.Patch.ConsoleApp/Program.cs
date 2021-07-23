@@ -35,7 +35,7 @@ namespace Demo.WebApi.Patch.ConsoleApp
 
             try
             {
-                using var httpResponseMessage = await service.PatchUserAsync(1, userPatchRequest);
+                using var httpResponseMessage = await service.PatchUserAsync(1, userPatchRequest, "mhoque");
 
                 if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
@@ -62,6 +62,7 @@ namespace Demo.WebApi.Patch.ConsoleApp
                 c =>
                 {
                     c.BaseAddress = new Uri("http://localhost:5000");
+                    c.DefaultRequestHeaders.Add("x-application-id", "my-test-app");
                 }).AddHttpMessageHandler<LoggingHandler>();
         }
     }

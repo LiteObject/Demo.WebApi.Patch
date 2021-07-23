@@ -48,6 +48,16 @@ namespace Demo.WebApi.Patch.Controllers
                 return BadRequest($"User not available in the system.");
             }
 
+            if (Request.Headers.TryGetValue("x-application-id", out var appid))
+            { 
+                Console.WriteLine($"appid: {appid}");
+            }
+
+            if (Request.Headers.TryGetValue("x-username", out var username))
+            {
+                Console.WriteLine($"username: {username}");
+            }
+
             patchDoc.ApplyTo(existingUser, ModelState);
 
             if (!ModelState.IsValid) 

@@ -17,5 +17,11 @@ namespace Demo.WebApi.Patch.API.Models
         [Required]
         [Email]
         public string Email { get; set; }
+
+
+
+        public int ApplicationId { get; set; }
+
+        public string Username { get; set; }
     }
 }

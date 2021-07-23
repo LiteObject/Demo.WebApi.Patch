@@ -11,6 +11,6 @@ namespace Demo.WebApi.Patch.ConsoleApp
     interface IUserService
     {
         [Patch("/api/users/{id}")]
-        public Task<HttpResponseMessage> PatchUserAsync(int id, [Body] PatchPayload[] patchDoc);
+        public Task<HttpResponseMessage> PatchUserAsync(int id, [Body] PatchPayload[] patchDoc, [Header("x-username")] string username = "");
     }
 }
