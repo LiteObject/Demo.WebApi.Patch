@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
 using System.Net.Http;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace Demo.WebApi.Patch.ConsoleApp
@@ -41,9 +42,9 @@ namespace Demo.WebApi.Patch.ConsoleApp
             }; */
 
             try
-            {
+            {                
                 //using var httpResponseMessage = await service.PatchUserAsync(1, userPatchRequest, "mhoque");
-                using var httpResponseMessage = await service.PatchUserAsync(1, new StringContent(jsonPayload, System.Text.Encoding.Unicode, "application/json"));
+                using var httpResponseMessage = await service.PatchUserAsync(1, new StringContent(jsonPayload, System.Text.Encoding.Unicode, MediaTypeNames.Application.Json));
 
                 if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
