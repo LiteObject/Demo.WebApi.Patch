@@ -33,6 +33,24 @@ namespace Demo.WebApi.Patch.Controllers
             return this.Ok(users);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] User user) 
+        {
+            if (!ModelState.IsValid) 
+            {
+                return this.BadRequest(ModelState);
+            }
+
+            var existingUser = UserRepo.FirstOrDefault(u => u.Id == id);
+
+            if (existingUser is null)
+            {
+                return BadRequest($"User not available in the system.");
+            }
+
+            return this.Ok(user);
+        }
+
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] JsonPatchDocument<User> patchDoc) 
         {
