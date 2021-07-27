@@ -33,6 +33,24 @@ namespace Demo.WebApi.Patch.Controllers
             return this.Ok(users);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            if (id == default) 
+            { 
+                return this.BadRequest();
+            }
+
+            var user = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
+
+            if (user == null) 
+            {
+                return this.NotFound($"No record found with id {id}.");
+            }
+
+            return this.Ok(user);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] User user) 
         {
