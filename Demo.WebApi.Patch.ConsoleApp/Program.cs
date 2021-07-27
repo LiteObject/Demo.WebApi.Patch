@@ -1,9 +1,9 @@
-﻿using Demo.WebApi.Patch.API.Models;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Demo.WebApi.Patch.ConsoleApp
@@ -28,9 +28,9 @@ namespace Demo.WebApi.Patch.ConsoleApp
             // This can be used as well instead of "PatchPayload"
             JsonPatchDocument<User> patchDoc = new JsonPatchDocument<User>();
             patchDoc.Replace(x => x.Email, "test789@email.com");
-            var jsonPayload = System.Text.Json.JsonSerializer.Serialize(patchDoc);
+            var jsonPayload = System.Text.Json.JsonSerializer.Serialize(patchDoc.Operations);
 
-            PatchPayload[] userPatchRequest = new PatchPayload[] 
+            /*PatchPayload[] userPatchRequest = new PatchPayload[] 
             {
                  new PatchPayload()
                     {
@@ -38,11 +38,12 @@ namespace Demo.WebApi.Patch.ConsoleApp
                         Value = "test-456@email.com",
                         Op = "replace"
                     }
-            };
+            }; */
 
             try
             {
-                using var httpResponseMessage = await service.PatchUserAsync(1, userPatchRequest, "mhoque");
+                //using var httpResponseMessage = await service.PatchUserAsync(1, userPatchRequest, "mhoque");
+                using var httpResponseMessage = await service.PatchUserAsync(1, new StringContent(jsonPayload, System.Text.Encoding.Unicode, "application/json"));
 
                 if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {

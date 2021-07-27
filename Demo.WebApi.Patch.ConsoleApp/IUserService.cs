@@ -1,4 +1,5 @@
-﻿using Refit;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Refit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,8 @@ namespace Demo.WebApi.Patch.ConsoleApp
     {
         [Patch("/api/users/{id}")]
         public Task<HttpResponseMessage> PatchUserAsync(int id, [Body] PatchPayload[] patchDoc, [Header("x-username")] string username = "");
+
+        [Patch("/api/users/{id}")]
+        public Task<HttpResponseMessage> PatchUserAsync(int id, [Body] StringContent patchDoc);
     }
 }
