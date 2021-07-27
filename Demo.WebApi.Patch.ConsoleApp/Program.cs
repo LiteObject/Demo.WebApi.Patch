@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Demo.WebApi.Patch.API.Models;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
@@ -22,6 +24,11 @@ namespace Demo.WebApi.Patch.ConsoleApp
         static async Task Main(string[] args)
         {
             var service = Provider.GetRequiredService<IUserService>();
+
+            // This can be used as well instead of "PatchPayload"
+            JsonPatchDocument<User> patchDoc = new JsonPatchDocument<User>();
+            patchDoc.Replace(x => x.Email, "test789@email.com");
+            var jsonPayload = System.Text.Json.JsonSerializer.Serialize(patchDoc);
 
             PatchPayload[] userPatchRequest = new PatchPayload[] 
             {
