@@ -11,21 +11,19 @@ namespace Demo.WebApi.Patch.API.Models
         [Required]
         public string Name { get; set; }
 
-        [Required]
         [Email]
         public string Email { get; set; }
 
-        public int ApplicationId { get; set; }
-
-        public string Username { get; set; }
+        [Phone]
+        public string Phone { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var results = new List<ValidationResult>();
 
-            if (ApplicationId == default && (this.Username == null || this.Username?.Length < 4)) 
+            if (string.IsNullOrWhiteSpace(this.Email) && string.IsNullOrWhiteSpace(this.Phone)) 
             {
-                results.Add(new ValidationResult($"{nameof(this.Username)} length must be greater than 4 when Application Id is 0."));
+                results.Add(new ValidationResult($"Either {nameof(this.Email)} or {nameof(this.Phone)} must be specified."));
             }
 
             return results;

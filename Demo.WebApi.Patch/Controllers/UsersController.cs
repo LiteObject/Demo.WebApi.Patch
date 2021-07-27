@@ -45,7 +45,7 @@ namespace Demo.WebApi.Patch.Controllers
 
             if (user == null) 
             {
-                return this.NotFound($"No record found with id {id}.");
+                return this.NotFound($"No record with id {id} found in the system.");
             }
 
             return this.Ok(user);
@@ -63,7 +63,7 @@ namespace Demo.WebApi.Patch.Controllers
 
             if (existingUser is null)
             {
-                return BadRequest($"User not available in the system.");
+                return this.NotFound($"No record with id {id} found in the system.");
             }
 
             return this.Ok(user);
@@ -81,7 +81,7 @@ namespace Demo.WebApi.Patch.Controllers
 
             if (existingUser is null) 
             {
-                return BadRequest($"User not available in the system.");
+                return this.NotFound($"No record with id {id} found in the system.");
             }
 
             if (Request.Headers.TryGetValue("x-application-id", out var appid))
