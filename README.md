@@ -5,3 +5,4 @@
 2. Example of payload creation from client
 3. API versioning and related swagger changes
 4. Model validation
+5. Example of custom payload for patch endpoint
