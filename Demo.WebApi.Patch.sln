@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31512.422
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.WebApi.Patch.API", "Demo.WebApi.Patch\Demo.WebApi.Patch.API.csproj", "{886DF9BF-8485-4395-AF8A-02BBB335AD16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.WebApi.Patch.API", "Demo.WebApi.Patch\Demo.WebApi.Patch.API.csproj", "{886DF9BF-8485-4395-AF8A-02BBB335AD16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.WebApi.Patch.ConsoleApp", "Demo.WebApi.Patch.ConsoleApp\Demo.WebApi.Patch.ConsoleApp.csproj", "{8A45B76F-ED67-4C6D-AB46-AA2AC5A016CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.WebApi.Patch.ConsoleApp", "Demo.WebApi.Patch.ConsoleApp\Demo.WebApi.Patch.ConsoleApp.csproj", "{8A45B76F-ED67-4C6D-AB46-AA2AC5A016CA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F90700EF-1795-4B71-9F1F-99EB65AD05AD}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
