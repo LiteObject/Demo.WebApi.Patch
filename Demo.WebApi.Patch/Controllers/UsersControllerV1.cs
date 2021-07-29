@@ -4,11 +4,12 @@
     using Microsoft.AspNetCore.JsonPatch;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
     using System;
     using System.Linq;
     using System.Text.Json;
     using System.Threading.Tasks;
-            
+
     [ApiController]
     [Route("api/users")]
     [ApiVersion("1.0", Deprecated = true)]

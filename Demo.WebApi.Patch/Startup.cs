@@ -73,8 +73,10 @@ using Swashbuckle.AspNetCore.SwaggerGen;
             services.AddSwaggerGen(c =>
             {
                 //c.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo.WebApi.Patch.API", Version = "v1" });
-                c.OperationFilter<SwaggerDefaultValues>();
                 // c.DocumentFilter<JsonPatchDocumentFilter>();
+
+                c.OperationFilter<SwaggerDefaultValues>();
+                c.EnableAnnotations();
             });
         }
 
