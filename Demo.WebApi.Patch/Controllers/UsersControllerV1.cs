@@ -4,7 +4,6 @@
     using Microsoft.AspNetCore.JsonPatch;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.Annotations;
     using System;
     using System.Linq;
     using System.Text.Json;
@@ -38,14 +37,14 @@ using Swashbuckle.AspNetCore.Annotations;
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            if (id == default) 
-            { 
+            if (id == default)
+            {
                 return this.BadRequest();
             }
 
             var user = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
 
-            if (user == null) 
+            if (user == null)
             {
                 return this.NotFound($"No record with id {id} found in the system.");
             }
@@ -54,9 +53,9 @@ using Swashbuckle.AspNetCore.Annotations;
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] User user) 
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] User user)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return this.BadRequest(ModelState);
             }
