@@ -70,6 +70,19 @@
             return this.Ok(user);
         }
 
+        /// <summary>
+        /// Example Payload:
+        ///         
+        ///    [
+        ///            {
+        ///              "value": "test789@email.com",
+        ///              "OperationType": 2,
+        ///              "path": "/Email",
+        ///              "op": "replace",
+        ///              "from": null
+        ///            }
+        ///    ]        
+        /// </summary>
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] JsonPatchDocument<User> patchDoc)
         {

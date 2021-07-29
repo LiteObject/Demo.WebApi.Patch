@@ -69,6 +69,25 @@
             return this.Ok(user);
         }
 
+        /// <summary>
+        /// Example Payload:
+        /// 
+        /// {  "ClientId": "123456",
+        ///    "JsonPatchDocument": 
+        ///    [
+        ///            {
+        ///              "value": "test789@email.com",
+        ///              "OperationType": 2,
+        ///              "path": "/Email",
+        ///              "op": "replace",
+        ///              "from": null
+        ///            }
+        ///    ]
+        /// }
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="patchDoc"></param>
+        /// <returns></returns>
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] CustomJsonPatchDocument<User> patchDoc)
         {
