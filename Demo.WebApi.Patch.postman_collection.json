@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "00ae2bd8-fe35-4df3-8b8f-5002c94588f2",
+		"name": "Demo.WebApi.Patch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api/users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5004/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/users/1",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 123,\r\n    \"name\": \"test user\",\r\n    \"email\": \"test@email.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5004/api/users/123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"users",
+						"123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/users/1 (V1.0)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "api-version",
+						"value": "1.0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"value\": \"test789@email.com\",\r\n        \"OperationType\": 2,\r\n        \"path\": \"/Email\",\r\n        \"op\": \"replace\",\r\n        \"from\": null\r\n    },\r\n    {\r\n        \"value\": \"Hello World\",\r\n        \"OperationType\": 2,\r\n        \"path\": \"/Name\",\r\n        \"op\": \"replace\",\r\n        \"from\": null\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5004/api/users/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5004",
+					"path": [
+						"api",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/users/1 (V2.0)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "api-version",
+						"value": "2.0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ClientId\": \"123456\",\r\n    \"JsonPatchDocument\": [\r\n        {\r\n            \"value\": \"test789@email.com\",\r\n            \"OperationType\": 2,\r\n            \"path\": \"/Email\",\r\n            \"op\": \"replace\",\r\n            \"from\": null\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5004/api/users/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5004",
+					"path": [
+						"api",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
