@@ -70,7 +70,7 @@ namespace Demo.WebApi.Patch.ConsoleApp
             services.AddRefitClient<IUserService>().ConfigureHttpClient(
                 c =>
                 {
-                    c.BaseAddress = new Uri("http://localhost:5000");
+                    c.BaseAddress = new Uri("http://localhost:5004");
                     c.DefaultRequestHeaders.Add("x-application-id", "my-test-app");
                 }).AddHttpMessageHandler<LoggingHandler>();
         }

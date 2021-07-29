@@ -8,7 +8,6 @@ namespace Demo.WebApi.Patch.API.Models
     {
         public int Id { get; set; }
 
-        [Required]
         public string Name { get; set; }
 
         [Email]
@@ -23,7 +22,7 @@ namespace Demo.WebApi.Patch.API.Models
 
             if (string.IsNullOrWhiteSpace(this.Email) && string.IsNullOrWhiteSpace(this.Phone)) 
             {
-                results.Add(new ValidationResult($"Either {nameof(this.Email)} or {nameof(this.Phone)} must be specified."));
+                results.Add(new ValidationResult($"Either {nameof(this.Email)} or {nameof(this.Phone)} must be specified. Both cannot be null or empty."));
             }
 
             return results;
