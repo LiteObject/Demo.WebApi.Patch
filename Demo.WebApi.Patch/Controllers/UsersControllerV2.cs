@@ -96,7 +96,8 @@
                 return BadRequest($"{nameof(patchDoc)} patch object cannot be null");
             }
 
-            User existingUser = UserRepo.FirstOrDefault(u => u.Id == id);
+            // Faking async call :(
+            User existingUser = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
 
             if (existingUser is null)
             {
