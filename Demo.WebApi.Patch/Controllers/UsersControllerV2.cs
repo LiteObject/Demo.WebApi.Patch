@@ -59,7 +59,8 @@
                 return this.BadRequest(ModelState);
             }
 
-            var existingUser = UserRepo.FirstOrDefault(u => u.Id == id);
+            // Faking async call :(
+            User existingUser = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
 
             if (existingUser is null)
             {
