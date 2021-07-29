@@ -1,26 +1,27 @@
-﻿using Demo.WebApi.Patch.API.Binders;
-using Demo.WebApi.Patch.API.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-namespace Demo.WebApi.Patch.Controllers
+﻿namespace Demo.WebApi.Patch.Controllers
 {
+    using Demo.WebApi.Patch.API.Models;    
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using System;
+    using System.Linq;
+    using System.Text.Json;
+    using System.Threading.Tasks;       
+    
     [ApiController]
-    [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    [Route("api/users")]
+    [ApiVersion("2.0")]
+    public class Users2Controller : ControllerBase
     {
         private static readonly User[] UserRepo = new[]
         {
-            new User { Id = 1, Name = "Test User", Email = "test@email.com" }
+            new User { Id = 1, Name = "Test User 1", Email = "test1@email.com" },
+            new User { Id = 2, Name = "Test User 2", Email = "test2@email.com" },
         };
 
-        private readonly ILogger<UsersController> _logger;
+        private readonly ILogger<Users2Controller> _logger;
 
-        public UsersController(ILogger<UsersController> logger)
+        public Users2Controller(ILogger<Users2Controller> logger)
         {
             _logger = logger;
         }
@@ -81,16 +82,6 @@ namespace Demo.WebApi.Patch.Controllers
             if (existingUser is null)
             {
                 return this.NotFound($"No record with id {id} found in the system.");
-            }
-
-            if (Request.Headers.TryGetValue("x-application-id", out Microsoft.Extensions.Primitives.StringValues appid))
-            {
-                Console.WriteLine($"appid: {appid}");
-            }
-
-            if (Request.Headers.TryGetValue("x-username", out Microsoft.Extensions.Primitives.StringValues username))
-            {
-                Console.WriteLine($"username: {username}");
             }
 
             patchDoc.JsonPatchDocument.ApplyTo(existingUser, ModelState);

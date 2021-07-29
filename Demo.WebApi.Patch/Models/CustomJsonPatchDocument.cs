@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Demo.WebApi.Patch.API.Models
 {
-    public class CustomJsonPatchDocument<T> : JsonPatchDocument<T> where T : class
+    public class CustomJsonPatchDocument<T> where T : class
     {
-        public int AppId {  get; set; }
+        public int ClientId {  get; set; }
+
+        public JsonPatchDocument<T> JsonPatchDocument {  get; set; }
     }
 }
