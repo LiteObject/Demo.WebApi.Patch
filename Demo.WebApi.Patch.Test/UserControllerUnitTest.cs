@@ -1,18 +1,13 @@
-using Demo.WebApi.Patch.API.Models;
-using Demo.WebApi.Patch.Controllers;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Xunit;
-using Xunit.Abstractions;
-
 namespace Demo.WebApi.Patch.Test
 {
+    using Demo.WebApi.Patch.API.Models;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Threading.Tasks;
+    using Xunit;
+    using Xunit.Abstractions;
+
     public class UserControllerUnitTest
     {
         private readonly ITestOutputHelper _output;
