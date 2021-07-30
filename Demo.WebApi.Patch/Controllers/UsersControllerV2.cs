@@ -118,7 +118,7 @@
             // This works
             if (!TryValidateModel(existingUser))
             {
-                // return ValidationProblem(ModelState);
+                return ValidationProblem(ModelState);
             }
             
             Console.WriteLine(JsonSerializer.Serialize(existingUser));
