@@ -19,11 +19,15 @@ namespace Demo.WebApi.Patch.Test
 
         public UserControllerUnitTest(ITestOutputHelper output) => _output = output ?? throw new ArgumentNullException($"{nameof(output)} cannot be null.");
 
-        [Fact]
-        public async Task Validation_of_User_DTO_Should_Fail()
+        [Theory]
+        [InlineData("", "test@email.com", "214-000-0000")]        
+        [InlineData("John Doe", "test", "*-*-0000")]
+        [InlineData("John Doe John Doe John Doe John Doe John Doe John Doe", "test@email.com", "*-*-0000")]
+        [InlineData("John Doe", null, null)]
+        public async Task Validat_of_User_DTO_Should_Fail(string name, string email, string phone)
         {
             // ARRANGE            
-            var user = new User { Id = 1, Name = "1234567890 1234567890" };            
+            var user = new User { Id = 1, Name = name, Email = email, Phone = phone };            
             var validationResultList = new List<ValidationResult>();          
             
             // ACT            
