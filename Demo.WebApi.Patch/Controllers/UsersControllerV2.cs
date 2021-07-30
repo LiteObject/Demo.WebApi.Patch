@@ -107,6 +107,7 @@
 
             // ApplyTo not validating model, so IsValid always returns "true"
             // However, if we call "TryValidateModel", then IsValid return correct result.
+            // ToDo: Check "ApplyTo" source code. https://github.com/aspnet/Mvc/blob/master/src/Microsoft.AspNetCore.Mvc.Formatters.Json/JsonPatchExtensions.cs
             patchDoc.JsonPatchDocument.ApplyTo(existingUser, ModelState);
 
             // Not working.
