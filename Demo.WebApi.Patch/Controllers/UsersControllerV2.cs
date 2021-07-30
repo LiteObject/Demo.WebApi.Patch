@@ -15,8 +15,8 @@
     {
         private static readonly User[] UserRepo = new[]
         {
-            new User { Id = 1, Name = "Test User 1", Email = "test1@email.com" },
-            new User { Id = 2, Name = "Test User 2", Email = "test2@email.com" },
+            new User { Id = 1, Name = "Test User 1", Email = "test1@email.com", Phone = "214-000-0000" },
+            new User { Id = 2, Name = "Test User 2", Email = "test2@email.com", Phone = "972-000-0000" },
         };
 
         private readonly ILogger<Users2Controller> _logger;
@@ -105,13 +105,22 @@
                 return this.NotFound($"No record with id {id} found in the system.");
             }
 
+            // ApplyTo not validating model, so IsValid always returns "true"
+            // However, if we call "TryValidateModel", then IsValid return correct result.
             patchDoc.JsonPatchDocument.ApplyTo(existingUser, ModelState);
 
+            // Not working.
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            // This works
+            if (!TryValidateModel(existingUser))
+            {
+                // return ValidationProblem(ModelState);
+            }
+            
             Console.WriteLine(JsonSerializer.Serialize(existingUser));
 
             return NoContent();
