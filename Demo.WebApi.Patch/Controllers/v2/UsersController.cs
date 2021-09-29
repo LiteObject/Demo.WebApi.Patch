@@ -1,28 +1,28 @@
-﻿namespace Demo.WebApi.Patch.Controllers
+﻿namespace Demo.WebApi.Patch.Controllers.v2
 {
-    using Demo.WebApi.Patch.API.Models;
-    using Microsoft.AspNetCore.JsonPatch;
+    using Demo.WebApi.Patch.API.Models;    
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using System;
     using System.Linq;
     using System.Text.Json;
-    using System.Threading.Tasks;
-
+    using System.Threading.Tasks;       
+    
     [ApiController]
-    [Route("api/users")]
-    [ApiVersion("1.0", Deprecated = true)]
-    public class Users1Controller : ControllerBase
+    [Route("api/[controller]")]
+    // [Route("api/{version:apiVersion}/users")]
+    [ApiVersion("2.0")]
+    public class UsersController : ControllerBase
     {
         private static readonly User[] UserRepo = new[]
         {
-            new User { Id = 1, Name = "Test User 1", Email = "test1@email.com" },
-            new User { Id = 2, Name = "Test User 2", Email = "test2@email.com" },
+            new User { Id = 1, Name = "(V2) Test User 21", Email = "test21@email.com", Phone = "214-000-0000" },
+            new User { Id = 2, Name = "(V2) Test User 22", Email = "test22@email.com", Phone = "972-000-0000" },
         };
 
-        private readonly ILogger<Users1Controller> _logger;
+        private readonly ILogger<UsersController> _logger;
 
-        public Users1Controller(ILogger<Users1Controller> logger)
+        public UsersController(ILogger<UsersController> logger)
         {
             _logger = logger;
         }
@@ -37,14 +37,14 @@
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            if (id == default)
-            {
+            if (id == default) 
+            { 
                 return this.BadRequest();
             }
 
             var user = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
 
-            if (user == null)
+            if (user == null) 
             {
                 return this.NotFound($"No record with id {id} found in the system.");
             }
@@ -53,9 +53,9 @@
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] User user)
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] User user) 
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) 
             {
                 return this.BadRequest(ModelState);
             }
@@ -73,7 +73,9 @@
 
         /// <summary>
         /// Example Payload:
-        ///         
+        /// 
+        /// {  "ClientId": "123456",
+        ///    "JsonPatchDocument": 
         ///    [
         ///            {
         ///              "value": "test789@email.com",
@@ -82,12 +84,16 @@
         ///              "op": "replace",
         ///              "from": null
         ///            }
-        ///    ]        
+        ///    ]
+        /// }
         /// </summary>
+        /// <param name="id"></param>
+        /// <param name="patchDoc"></param>
+        /// <returns></returns>
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] JsonPatchDocument<User> patchDoc)
+        public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] CustomJsonPatchDocument<User> patchDoc)
         {
-            if (patchDoc is null)
+            if (patchDoc is null || patchDoc.JsonPatchDocument is null)
             {
                 return BadRequest($"{nameof(patchDoc)} patch object cannot be null");
             }
@@ -100,13 +106,23 @@
                 return this.NotFound($"No record with id {id} found in the system.");
             }
 
-            patchDoc.ApplyTo(existingUser, ModelState);
+            // ApplyTo not validating model, so IsValid always returns "true"
+            // However, if we call "TryValidateModel", then IsValid return correct result.
+            // ToDo: Check "ApplyTo" source code. https://github.com/aspnet/Mvc/blob/master/src/Microsoft.AspNetCore.Mvc.Formatters.Json/JsonPatchExtensions.cs
+            patchDoc.JsonPatchDocument.ApplyTo(existingUser, ModelState);
 
+            // Not working.
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            // This works
+            if (!TryValidateModel(existingUser))
+            {
+                return ValidationProblem(ModelState);
+            }
+            
             Console.WriteLine(JsonSerializer.Serialize(existingUser));
 
             return NoContent();

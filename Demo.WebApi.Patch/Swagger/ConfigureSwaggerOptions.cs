@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 namespace Demo.WebApi.Patch.API.Swagger
 {
     /// <summary>
-    /// Original 
+    /// Original: https://github.com/dotnet/aspnet-api-versioning/blob/master/samples/webapi/SwaggerWebApiSample/Startup.cs 
     /// </summary>
     public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {

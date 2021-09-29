@@ -6,6 +6,9 @@ using System.Linq;
 
 namespace Demo.WebApi.Patch.API.Swagger
 {
+    /// <summary>
+    /// Original: https://github.com/dotnet/aspnet-api-versioning/blob/master/samples/webapi/SwaggerWebApiSample/Startup.cs 
+    /// </summary>
     public class SwaggerDefaultValues : IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)

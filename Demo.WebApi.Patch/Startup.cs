@@ -2,22 +2,24 @@ namespace Demo.WebApi.Patch
 {
     using Demo.WebApi.Patch.API.Swagger;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Diagnostics;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
+    using Microsoft.AspNetCore.Mvc.ApiExplorer;
     using Microsoft.AspNetCore.Mvc.Formatters;
     using Microsoft.AspNetCore.Mvc.Versioning;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
+    using Swashbuckle.AspNetCore.SwaggerGen;
     using System.Linq;
 
     /// <summary>
-    /// 
-    /// 
+    /// Source: https://github.com/dotnet/aspnet-api-versioning/tree/master/samples 
     /// Source: https://docs.microsoft.com/en-us/aspnet/core/web-api/jsonpatch?view=aspnetcore-5.0
     /// </summary>
     public class Startup
@@ -45,17 +47,21 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
             services.AddApiVersioning(config =>
             {
-                config.DefaultApiVersion = new ApiVersion(1, 0);
+                config.DefaultApiVersion = ApiVersion.Default; // = new ApiVersion(1, 0);
                 config.AssumeDefaultVersionWhenUnspecified = true;
 
-                // Add the headers "api-supported-versions" and "api-deprecated-versions" to let the clients of the API know all supported versions
+                // Add the headers: "api-supported-versions" and "api-deprecated-versions" to let the clients of the API know all supported versions
                 config.ReportApiVersions = true;
-                
+
                 config.ApiVersionReader = ApiVersionReader.Combine(
                     new HeaderApiVersionReader("api-version"),
-                    new QueryStringApiVersionReader("api-version"));
+                    new QueryStringApiVersionReader("api-version"),
+                    // To send version info in the accept header ("accrpt" header advertises which content types client is able to understand)
+                    new MediaTypeApiVersionReader("api-version")
+                );
             });
 
+            // To add an API explorer that is API version aware
             services.AddVersionedApiExplorer(options =>
             {
                 // Add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
@@ -81,12 +87,30 @@ using Swashbuckle.AspNetCore.SwaggerGen;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseExceptionHandler(appBuilder =>
+            {
+                appBuilder.Run(
+                               async (context) =>
+                               {
+                                   var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+                                   if (exceptionHandlerFeature != null)
+                                   {
+                                       var logger = loggerFactory.CreateLogger("Global Exception Logger");
+                                       logger.LogError(500, exceptionHandlerFeature.Error, exceptionHandlerFeature.Error.Message);
+                                   }
+
+                                   // Response to client
+                                   context.Response.StatusCode = 500;
+                                   await context.Response.WriteAsync("Encountered an unexpected fault. Try again later.");
+                               });
+            });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger(c =>
@@ -103,7 +127,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
                 // build a swagger endpoint for each discovered API version
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
-                    c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());                    
+                    c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                 }
 
                 c.RoutePrefix = string.Empty;
@@ -116,7 +140,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });           
+            });
         }
 
         private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
