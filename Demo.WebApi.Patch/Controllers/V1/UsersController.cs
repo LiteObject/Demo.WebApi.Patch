@@ -1,4 +1,4 @@
-﻿namespace Demo.WebApi.Patch.Controllers
+﻿namespace Demo.WebApi.Patch.API.Controllers.V1
 {
     using Demo.WebApi.Patch.API.Models;
     using Microsoft.AspNetCore.JsonPatch;
@@ -10,7 +10,7 @@
     using System.Threading.Tasks;
 
     [ApiController]
-    [Route("api/users")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0", Deprecated = true)]
     public class Users1Controller : ControllerBase
     {
@@ -31,7 +31,7 @@
         public async Task<IActionResult> Get()
         {
             var users = await Task.FromResult(UserRepo);
-            return this.Ok(users);
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
@@ -39,17 +39,17 @@
         {
             if (id == default)
             {
-                return this.BadRequest();
+                return BadRequest();
             }
 
             var user = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
 
             if (user == null)
             {
-                return this.NotFound($"No record with id {id} found in the system.");
+                return NotFound($"No record with id {id} found in the system.");
             }
 
-            return this.Ok(user);
+            return Ok(user);
         }
 
         [HttpPut("{id}")]
@@ -57,7 +57,7 @@
         {
             if (!ModelState.IsValid)
             {
-                return this.BadRequest(ModelState);
+                return BadRequest(ModelState);
             }
 
             // Faking async call :(
@@ -65,10 +65,10 @@
 
             if (existingUser is null)
             {
-                return this.NotFound($"No record with id {id} found in the system.");
+                return NotFound($"No record with id {id} found in the system.");
             }
 
-            return this.Ok(user);
+            return Ok(user);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@
 
             if (existingUser is null)
             {
-                return this.NotFound($"No record with id {id} found in the system.");
+                return NotFound($"No record with id {id} found in the system.");
             }
 
             patchDoc.ApplyTo(existingUser, ModelState);

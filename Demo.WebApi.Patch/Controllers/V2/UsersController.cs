@@ -1,27 +1,21 @@
-﻿namespace Demo.WebApi.Patch.Controllers
+﻿namespace Demo.WebApi.Patch.API.Controllers.V2
 {
-    using Demo.WebApi.Patch.API.Models;    
+    using Demo.WebApi.Patch.API.Models;
+    using Demo.WebApi.Patch.API.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using System;
-    using System.Linq;
     using System.Text.Json;
-    using System.Threading.Tasks;       
-    
+    using System.Threading.Tasks;
+
     [ApiController]
-    [Route("api/users")]
+    [Route("api/v{version:apiVersion}/users")]
     [ApiVersion("2.0")]
-    public class Users2Controller : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private static readonly User[] UserRepo = new[]
-        {
-            new User { Id = 1, Name = "Test User 1", Email = "test1@email.com", Phone = "214-000-0000" },
-            new User { Id = 2, Name = "Test User 2", Email = "test2@email.com", Phone = "972-000-0000" },
-        };
+        private readonly ILogger<UsersController> _logger;
 
-        private readonly ILogger<Users2Controller> _logger;
-
-        public Users2Controller(ILogger<Users2Controller> logger)
+        public UsersController(ILogger<UsersController> logger)
         {
             _logger = logger;
         }
@@ -29,45 +23,68 @@
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var users = await Task.FromResult(UserRepo);
-            return this.Ok(users);
+            var users = await Task.FromResult(UserService.GetAll());
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            if (id == default) 
-            { 
-                return this.BadRequest();
-            }
-
-            var user = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
-
-            if (user == null) 
+            if (id == default)
             {
-                return this.NotFound($"No record with id {id} found in the system.");
+                return BadRequest();
             }
 
-            return this.Ok(user);
+            var user = await Task.FromResult(UserService.GetById(id));
+
+            if (user == null)
+            {
+                return NotFound($"No record with id {id} found in the system.");
+            }
+
+            return Ok(user);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] User user) 
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] User user)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
-                return this.BadRequest(ModelState);
+                return BadRequest(ModelState);
+            }
+
+            if (id != user.Id)
+            {
+                return BadRequest();
             }
 
             // Faking async call :(
-            User existingUser = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
+            User existingUser = await Task.FromResult(UserService.GetById(id));
 
             if (existingUser is null)
             {
-                return this.NotFound($"No record with id {id} found in the system.");
+                return NotFound($"No record with id {id} found in the system.");
             }
 
-            return this.Ok(user);
+            UserService.Update(user);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var existingUser = UserService.GetById(id);
+
+            if (existingUser is null)
+            {
+                return NotFound();
+            }
+
+            // Delete user here
+            UserService.Delete(id);
+
+            return NoContent();
         }
 
         /// <summary>
@@ -98,11 +115,11 @@
             }
 
             // Faking async call :(
-            User existingUser = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
+            User existingUser = await Task.FromResult(UserService.GetById(id));
 
             if (existingUser is null)
             {
-                return this.NotFound($"No record with id {id} found in the system.");
+                return NotFound($"No record with id {id} found in the system.");
             }
 
             // ApplyTo not validating model, so IsValid always returns "true"
@@ -121,7 +138,7 @@
             {
                 return ValidationProblem(ModelState);
             }
-            
+
             Console.WriteLine(JsonSerializer.Serialize(existingUser));
 
             return NoContent();

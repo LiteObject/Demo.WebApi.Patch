@@ -4,15 +4,14 @@ namespace Demo.WebApi.Patch
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
+    using Microsoft.AspNetCore.Mvc.ApiExplorer;
     using Microsoft.AspNetCore.Mvc.Formatters;
     using Microsoft.AspNetCore.Mvc.Versioning;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Options;
-    using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
+    using Swashbuckle.AspNetCore.SwaggerGen;
     using System.Linq;
 
     /// <summary>
@@ -50,7 +49,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
                 // Add the headers "api-supported-versions" and "api-deprecated-versions" to let the clients of the API know all supported versions
                 config.ReportApiVersions = true;
-                
+
                 config.ApiVersionReader = ApiVersionReader.Combine(
                     new HeaderApiVersionReader("api-version"),
                     new QueryStringApiVersionReader("api-version"));
@@ -103,7 +102,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
                 // build a swagger endpoint for each discovered API version
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
-                    c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());                    
+                    c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                 }
 
                 c.RoutePrefix = string.Empty;
@@ -116,7 +115,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });           
+            });
         }
 
         private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
