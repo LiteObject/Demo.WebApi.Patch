@@ -19,7 +19,7 @@ namespace Demo.WebApi.Patch.Test
         [InlineData("John Doe", "test", "*-*-0000")]
         [InlineData("John Doe John Doe John Doe John Doe John Doe John Doe", "test@email.com", "*-*-0000")]
         [InlineData("John Doe", null, null)]
-        public async Task Validation_of_User_DTO_Should_Fail(string name, string email, string phone)
+        public void Validation_of_User_DTO_Should_Failc(string name, string email, string phone)
         {
             // ARRANGE            
             var user = new User { Id = 1, Name = name, Email = email, Phone = phone };            

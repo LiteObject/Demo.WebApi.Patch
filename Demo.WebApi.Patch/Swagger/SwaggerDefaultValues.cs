@@ -11,8 +11,16 @@ namespace Demo.WebApi.Patch.API.Swagger
     /// </summary>
     public class SwaggerDefaultValues : IOperationFilter
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="context"></param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
+            ArgumentNullException.ThrowIfNull(operation, nameof(operation));
+            ArgumentNullException.ThrowIfNull(context, nameof(context));
+
             var apiDescription = context.ApiDescription;
             operation.Deprecated |= apiDescription.IsDeprecated();
 

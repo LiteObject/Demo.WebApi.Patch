@@ -9,8 +9,12 @@
     using System.Text.Json;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// The v1 users controller
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0", Deprecated = true)]
     public class UsersController : ControllerBase
     {
@@ -22,19 +26,60 @@
 
         private readonly ILogger<UsersController> _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UsersController"/> class.
+        /// </summary>
+        /// <param name="logger">The logger</param>
         public UsersController(ILogger<UsersController> logger)
         {
             _logger = logger;
         }
 
+        /// <summary>
+        /// Retrieves all users
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/users
+        ///     GET /api/v1/users
+        ///
+        /// </remarks>
+        /// <returns>A collection of users</returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get()
         {
-            var users = await Task.FromResult(UserRepo);
+            User[] users = await Task.FromResult(UserRepo);
+
+            if (users.Length == 0) 
+            { 
+                return NotFound();
+            }
+
             return this.Ok(users);
         }
 
+        /// <summary>
+        /// Retrieves a user for the given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/users/{id}
+        ///     GET /api/v1/users/{id}
+        ///
+        /// </remarks>
+        /// <returns>A user</returns>
+        /// <response code="200">If requested user is found</response>        
+        /// <response code="404">If requested user is not found</response>
+        /// <response code="400">If user id is invalid</response>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(int id)
         {
             Math.Sign(Double.NaN);
@@ -54,7 +99,19 @@
             return this.Ok(user);
         }
 
+        /// <summary>
+        /// Updates a user
+        /// </summary>
+        /// <param name="id">The user identifier</param>
+        /// <param name="user">The updated user object</param>
+        /// <returns>The updated user</returns>
+        /// <response code="200">If requested user is found</response>        
+        /// <response code="404">If requested user is not found</response>
+        /// <response code="400">If request is invalid</response>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] User user)
         {
             if (!ModelState.IsValid)
@@ -63,7 +120,7 @@
             }
 
             // Faking async call :(
-            User existingUser = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
+            User? existingUser = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
 
             if (existingUser is null)
             {
@@ -74,6 +131,9 @@
         }
 
         /// <summary>
+        /// Partially updates a user 
+        /// </summary>
+        /// <remarks> 
         /// Example Payload:
         ///         
         ///    [
@@ -84,9 +144,18 @@
         ///              "op": "replace",
         ///              "from": null
         ///            }
-        ///    ]        
-        /// </summary>
+        ///    ]
+        /// </remarks>
+        /// <param name="id">The resource identifier</param>
+        /// <param name="patchDoc">The json patch document</param>
+        /// <returns>No content</returns>
+        /// <response code="204">If operation is successful</response>        
+        /// <response code="404">If requested resource is not found</response>
+        /// <response code="400">If request is invalid</response>
         [HttpPatch("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] JsonPatchDocument<User> patchDoc)
         {
             if (patchDoc is null)
@@ -95,7 +164,7 @@
             }
 
             // Faking async call :(
-            User existingUser = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
+            User? existingUser = await Task.FromResult(UserRepo.FirstOrDefault(u => u.Id == id));
 
             if (existingUser is null)
             {

@@ -13,8 +13,16 @@ namespace Demo.WebApi.Patch.API.Swagger
     {
         private readonly IApiVersionDescriptionProvider _provider;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="provider"></param>
         public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => _provider = provider;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
         public void Configure(SwaggerGenOptions options)
         {
             // add a swagger document for each discovered API version
